@@ -94,9 +94,9 @@ export function createSphere(params){
 } 
 
 export function createSpheresInGrid(params){
-    let gridSize = 4;
-    let sphereSize = 7;
-    let gridGutter = 1.5;
+    let gridSize = 6;
+    let sphereSize = 20;
+    let gridGutter = 3;
     let texture;
 
     //Texture 
@@ -120,7 +120,7 @@ export function createSpheresInGrid(params){
                 texture: texture,
                 x: (i * (sphereSize * 2 + gridGutter * 2)) - (((sphereSize * 2 + gridGutter * 2) * gridSize) * 0.5 - (sphereSize + gridGutter)),
                 y: (f * (sphereSize  * 2 + gridGutter * 2)) - (((sphereSize * 2 + gridGutter * 2) * gridSize) * 0.5 - (sphereSize + gridGutter)),
-                z: -80,
+                z: -300,
                 size: sphereSize });
             sphere.type = "target";
             spheres.push(sphere);

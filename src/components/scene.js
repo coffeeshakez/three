@@ -56,17 +56,17 @@ constructor(props){
     this.scene.add( hemisphereLight );
 
     this.spheres = createSpheresInGrid();
-    this.spheres.forEach(cube => {
-        this.scene.add(cube)    
-    });
+    // this.spheres.forEach(cube => {
+    //     this.scene.add(cube)    
+    // });
 
     //Add 3 random 
     
-    // this.scene.add(this.getRandomSphere());
-    // this.scene.add(this.getRandomSphere());
-    // this.scene.add(this.getRandomSphere());
+    this.scene.add(this.getRandomSphere());
+    this.scene.add(this.getRandomSphere());
+    this.scene.add(this.getRandomSphere());
     
-    this.camera.position.z = 10;
+    this.camera.position.z = 100;
 
 
     var reticle = new THREE.Mesh(
