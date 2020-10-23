@@ -4,6 +4,7 @@ import { PointerLockControls } from "three/examples/jsm/controls/PointerLockCont
 import { createDirectionalLight } from "../utils/LightUtils";
 import { createSphere, createSpheresInGrid } from "../utils/ThreeUtils";
 import "./layout.css";
+import {MyPointerLockControls} from "../utils/MyPointerLockControls";
 
 class Scene extends React.Component {
 
@@ -13,10 +14,17 @@ constructor(props){
       points: 0,
       count: 0,
       background: 200,
+      countDownTimer: 3,
+      totalTimeOnTask: 30,
+      timerHasStarted: false,
+      countDownHasStarted: false,
+      precision: 100,
+      misses: 0,
     }
 
     this.handleStart =  this.handleStart.bind(this);
     this.getRandomSphere = this.getRandomSphere.bind(this);
+    this.changeSense = this.changeSense.bind(this);
 }
 
   componentDidMount() {
@@ -25,7 +33,8 @@ constructor(props){
     this.camera = new THREE.PerspectiveCamera(75, this.mount.offsetWidth/this.mount.offsetHeight, 0.1, 1000);
     this.camera.position.set(0, 0, -10);
 
-
+    this.MYSENSE = 0.001;
+    
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     
     this.renderer.setSize(this.mount.offsetWidth, this.mount.offsetHeight)
@@ -69,19 +78,51 @@ constructor(props){
     this.camera.position.z = 100;
 
 
-    var reticle = new THREE.Mesh(
-      new THREE.RingBufferGeometry( 0.2 * 0.1, 0.2 * 0.001, 64),
-      new THREE.MeshBasicMaterial( {color: 0x00FF00, side: THREE.DoubleSide })
-         );
-   reticle.position.z = -5;
+  //   var reticle = new THREE.Mesh(
+  //     new THREE.RingBufferGeometry( 0.2 * 0.1, 0.2 * 0.001, 64),
+  //     new THREE.MeshBasicMaterial( {color: 0x00FF00, side: THREE.DoubleSide })
+  //        );
+  //  reticle.position.z = -5;
    
-   reticle.lookAt(this.camera.position);
+  //  reticle.lookAt(this.camera.position);
+
+   var material = new THREE.LineBasicMaterial({ color: 0x00FF00 });
+
+// crosshair size
+var x = 0.01, y = 0.01;
+
+var geometry = new THREE.Geometry();
+
+// crosshair
+geometry.vertices.push(new THREE.Vector3(0, y, 0));
+geometry.vertices.push(new THREE.Vector3(0, -y, 0));
+geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+geometry.vertices.push(new THREE.Vector3(x, 0, 0));    
+geometry.vertices.push(new THREE.Vector3(-x, 0, 0));
+
+var crosshair = new THREE.Line( geometry, material );
+
+// place it in the center
+var crosshairPercentX = 50;
+var crosshairPercentY = 50;
+var crosshairPositionX = (crosshairPercentX / 100) * 2 - 1;
+var crosshairPositionY = (crosshairPercentY / 100) * 2 - 1;
+
+crosshair.position.x = crosshairPositionX * this.camera.aspect;
+crosshair.position.y = crosshairPositionY;
+
+crosshair.position.z = -0.3;
+
+this.camera.add( crosshair );
    
-   this.camera.add(reticle);
+  
+
+  //  this.camera.add(reticle);
 
    this.scene.add(this.camera);
 
-    let controls = new PointerLockControls( this.camera, this.mount );
+    let controls = new MyPointerLockControls( this.camera, this.mount, this.MYSENSE );
+        
     let raycaster = new THREE.Raycaster();
     
 
@@ -89,7 +130,8 @@ constructor(props){
     this.mount.addEventListener( 'click', function(event, scope) {
 
         controls.lock();
-        raycaster.setFromCamera( new THREE.Vector2, this.camera );
+        if(this.state.timerHasStarted){
+          raycaster.setFromCamera( new THREE.Vector2, this.camera );
 
         // calculate objects intersecting the picking ray
         var intersects = raycaster.intersectObjects( this.scene.children );
@@ -108,15 +150,69 @@ constructor(props){
            })
 
           }
+          else{
+            this.setState(prevState =>{
+              return{
+                   ...prevState,
+                   misses : prevState.misses + 1
+              }
+           });
+          }
         }
+      }  
 
     }.bind(this), false );
 
     controls.addEventListener( 'lock', function () {
 
         // menu.style.display = 'none';
-        console.log("Now controls are locked");
-    } );
+        
+        if(!this.state.countDownHasStarted){
+          this.setState(prevState =>{
+            return{
+                 ...prevState,
+                 countDownHasStarted : true
+            }
+         });
+          var self = this;
+          var downloadTimer = setInterval(function(){
+
+          if(self.state.countDownTimer > 0){
+            self.setState(prevState =>{
+              return{
+                   ...prevState,
+                   countDownTimer : prevState.countDownTimer - 1
+              }
+           })
+          }
+          else{
+            self.setState({timerHasStarted: true});
+          }
+
+          if(self.state.totalTimeOnTask > 0 && self.state.countDownTimer <= 0){
+            self.setState(prevState =>{
+              return{
+                   ...prevState,
+                   totalTimeOnTask: prevState.totalTimeOnTask - 1 
+              }
+           });
+            
+          }
+          if(self.state.totalTimeOnTask <= 0 ){
+            self.setState({timerHasStarted: false});
+            clearInterval(downloadTimer);
+          }
+          
+        }, 1000);
+
+        
+        }
+        
+        
+
+
+
+    }.bind(this), false );
 
     controls.addEventListener( 'unlock', function () {
 
@@ -160,14 +256,23 @@ constructor(props){
     return sphere[0];
   }
 
+  changeSense(){
+    this.MYSENSE += 1;
+    console.log("Sensitivity: ", this.MYSENSE);
+  }
+
   render() {
     return (
       <>
-        <div className="test" ref={ref => (this.mount = ref)} style={{ width: `100vw`, height: `100vh` }}></div>
-        <div className="points">{this.state.points}
-        </div>
-        <div className="overlay"> 
-            
+        <div className="test" ref={ref => (this.mount = ref)} style={{ width: `100vw`, height: `100vh`, margin: `0`, padding: `0`}}></div>
+          <div className="overlay"> 
+            <div className="topMenu">
+              <h1>countDown: {this.state.countDownTimer}</h1>
+              <h1>time left: {this.state.totalTimeOnTask}</h1>
+              <h1>Hits: {this.state.points}</h1>
+              <h1>Miss: {this.state.misses}</h1>
+              <h1>Precision: {Math.round((this.state.points - this.state.misses) / this.state.points * 100)}</h1>
+            </div>
         </div>
       </>
     )
