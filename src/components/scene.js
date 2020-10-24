@@ -5,6 +5,8 @@ import { createDirectionalLight } from "../utils/LightUtils";
 import { createSphere, createSpheresInGrid } from "../utils/ThreeUtils";
 import "./layout.css";
 import {MyPointerLockControls} from "../utils/MyPointerLockControls";
+import { createCrossHair } from '../utils/CrosshairUtils';
+import InGameTopInfo from "./inGameTopInfo/InGameTopInfo";
 
 class Scene extends React.Component {
 
@@ -55,9 +57,9 @@ constructor(props){
 
     this.scene.background = new THREE.Color(0XFFFFFF);
 
+    //Lightning
     var ambientLight = new THREE.AmbientLight( 0x404040 );
     var hemisphereLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
-
     const directionalLight = createDirectionalLight();
     
     this.scene.add( directionalLight );
@@ -78,46 +80,10 @@ constructor(props){
     this.camera.position.z = 100;
 
 
-  //   var reticle = new THREE.Mesh(
-  //     new THREE.RingBufferGeometry( 0.2 * 0.1, 0.2 * 0.001, 64),
-  //     new THREE.MeshBasicMaterial( {color: 0x00FF00, side: THREE.DoubleSide })
-  //        );
-  //  reticle.position.z = -5;
+    let crosshair = createCrossHair(this.camera);
    
-  //  reticle.lookAt(this.camera.position);
+    this.camera.add( crosshair );
 
-   var material = new THREE.LineBasicMaterial({ color: 0x00FF00 });
-
-// crosshair size
-var x = 0.01, y = 0.01;
-
-var geometry = new THREE.Geometry();
-
-// crosshair
-geometry.vertices.push(new THREE.Vector3(0, y, 0));
-geometry.vertices.push(new THREE.Vector3(0, -y, 0));
-geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-geometry.vertices.push(new THREE.Vector3(x, 0, 0));    
-geometry.vertices.push(new THREE.Vector3(-x, 0, 0));
-
-var crosshair = new THREE.Line( geometry, material );
-
-// place it in the center
-var crosshairPercentX = 50;
-var crosshairPercentY = 50;
-var crosshairPositionX = (crosshairPercentX / 100) * 2 - 1;
-var crosshairPositionY = (crosshairPercentY / 100) * 2 - 1;
-
-crosshair.position.x = crosshairPositionX * this.camera.aspect;
-crosshair.position.y = crosshairPositionY;
-
-crosshair.position.z = -0.3;
-
-this.camera.add( crosshair );
-   
-  
-
-  //  this.camera.add(reticle);
 
    this.scene.add(this.camera);
 
@@ -125,12 +91,11 @@ this.camera.add( crosshair );
         
     let raycaster = new THREE.Raycaster();
     
-
 // add event listener to show/hide a UI (e.g. the game's menu)
-    this.mount.addEventListener( 'click', function(event, scope) {
+    this.mount.addEventListener( 'mousedown', function(event, scope) {  
 
         controls.lock();
-        if(this.state.timerHasStarted){
+        if(this.state.timerHasStarted) {
           raycaster.setFromCamera( new THREE.Vector2, this.camera );
 
         // calculate objects intersecting the picking ray
@@ -207,10 +172,6 @@ this.camera.add( crosshair );
 
         
         }
-        
-        
-
-
 
     }.bind(this), false );
 
@@ -266,13 +227,15 @@ this.camera.add( crosshair );
       <>
         <div className="test" ref={ref => (this.mount = ref)} style={{ width: `100vw`, height: `100vh`, margin: `0`, padding: `0`}}></div>
           <div className="overlay"> 
-            <div className="topMenu">
-              <h1>countDown: {this.state.countDownTimer}</h1>
-              <h1>time left: {this.state.totalTimeOnTask}</h1>
-              <h1>Hits: {this.state.points}</h1>
-              <h1>Miss: {this.state.misses}</h1>
-              <h1>Precision: {Math.round((this.state.points - this.state.misses) / this.state.points * 100)}</h1>
-            </div>
+          <InGameTopInfo 
+              props={{
+                countDownTimer: this.state.countDownTimer, 
+                totalTimeOnTask: this.state.totalTimeOnTask,
+                hits: this.state.points,
+                misses: this.state.misses,
+              }}>
+
+          </InGameTopInfo>
         </div>
       </>
     )
