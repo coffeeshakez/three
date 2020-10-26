@@ -7,6 +7,7 @@ import "./layout.css";
 import {MyPointerLockControls} from "../utils/MyPointerLockControls";
 import { createCrossHair } from '../utils/CrosshairUtils';
 import InGameTopInfo from "./inGameTopInfo/InGameTopInfo";
+import { Countdown } from './countDown/Countdown';
 
 class Scene extends React.Component {
 
@@ -234,9 +235,10 @@ constructor(props){
                 hits: this.state.points,
                 misses: this.state.misses,
               }}>
-
           </InGameTopInfo>
         </div>
+
+        <Countdown props="1"></Countdown>
       </>
     )
   }
