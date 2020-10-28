@@ -15,7 +15,7 @@ class Dashboard extends Component {
                     linkState={{id: "grid-shot"}}
                     title="GridShot"
                     description="improve your aiming skills"
-                    imageUrl="./sprekkjaglass.jpg"
+                    imageUrl="grid-shot.png"
                 />
             </Layout>
          );

@@ -3,7 +3,7 @@
     flex-direction: column;
     -webkit-box-shadow: 6px 0px 20px -5px #000000; 
     box-shadow: 6px 0px 20px -5px #000000;
-    width: 50%;
+    width: 33%;
     text-decoration: none;
     color: black;
     transition: .2s all;
@@ -19,7 +19,7 @@
     padding: 18px 12px;
 }
 .card__image{
-    height: 200px;
+    height: 170px;
     object-fit: cover;
 }
 .card__title {
