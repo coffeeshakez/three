@@ -3,7 +3,6 @@ import * as THREE from "three";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 import { createDirectionalLight } from "../utils/LightUtils";
 import { createSphere, createSpheresInGrid } from "../utils/ThreeUtils";
-import "./layout.css";
 import {MyPointerLockControls} from "../utils/MyPointerLockControls";
 import { createCrossHair } from '../utils/CrosshairUtils';
 import InGameTopInfo from "./inGameTopInfo/InGameTopInfo";
@@ -48,6 +47,8 @@ constructor(props){
     let loader = new THREE.TextureLoader();
     loader.crossOrigin = '';
     let texture = loader.load('./wall.jpg');
+    texture.anisotropy = renderer.getMaxAnisotropy();
+
 
     var geometry = new THREE.BoxGeometry(1000, 400, 1000, 10, 5, 10);
     var material = new THREE.MeshBasicMaterial({map: texture, fog: true});
@@ -69,7 +70,7 @@ constructor(props){
     this.scene.add( ambientLight );
     this.scene.add( hemisphereLight );
 
-    this.spheres = createSpheresInGrid();
+    this.spheres = createSpheresInGrid("", this.renderer);
     // this.spheres.forEach(cube => {
     //     this.scene.add(cube)    
     // });

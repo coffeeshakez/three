@@ -1,0 +1,32 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    -webkit-box-shadow: 6px 0px 20px -5px #000000; 
+    box-shadow: 6px 0px 20px -5px #000000;
+    width: 50%;
+    text-decoration: none;
+    color: black;
+    transition: .2s all;
+}
+
+.card:hover{
+    -webkit-box-shadow: 6px 0px 20px -5px #000000; 
+    box-shadow: 10px 0px 20px -5px #000000;
+    transform: translateY(-4px)
+}
+
+.card-info-container {
+    padding: 18px 12px;
+}
+.card__image{
+    height: 200px;
+    object-fit: cover;
+}
+.card__title {
+    margin: 0 0 8px 0;
+
+}
+
+.card__description {
+    margin: 0;
+}

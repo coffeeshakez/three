@@ -1,6 +1,7 @@
 .result-list {
     list-style-type: none;
     background-color: black;
+    padding: 32px;
 }
 
 .result-list__item{
