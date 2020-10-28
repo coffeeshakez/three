@@ -21,6 +21,8 @@ class Game extends Component {
         }
     }
     render() { 
+        console.log(this.props.location);
+        console.log(this.state);
         
         return ( 
             <>

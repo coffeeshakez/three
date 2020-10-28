@@ -11,7 +11,7 @@ class Dashboard extends Component {
         return ( 
             <Layout>
                 <Card
-                    url="/game"
+                    url={`/game?id=${"grid-shot"}`}
                     linkState={{id: "grid-shot"}}
                     title="GridShot"
                     description="improve your aiming skills"

@@ -3,7 +3,8 @@ module.exports = {
     title: `Aimtrainer`,
     description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
     author: `@gatsbyjs`,
-  },
+    siteUrl: `https://three-staging.herokuapp.com/`
+    },
   plugins: [
     `gatsby-plugin-react-helmet`,
     {
