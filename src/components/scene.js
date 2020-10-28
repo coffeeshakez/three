@@ -47,7 +47,7 @@ constructor(props){
     let loader = new THREE.TextureLoader();
     loader.crossOrigin = '';
     let texture = loader.load('./wall.jpg');
-    texture.anisotropy = renderer.getMaxAnisotropy();
+    texture.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
 
 
     var geometry = new THREE.BoxGeometry(1000, 400, 1000, 10, 5, 10);

@@ -103,7 +103,7 @@ export function createSpheresInGrid(params, renderer){
     let loader = new THREE.TextureLoader();
     loader.crossOrigin = '';
     texture = loader.load('./sprekkjaglass.jpg');
-    texture.anisotropy = renderer.getMaxAnisotropy();
+    texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
 
     if(params){
         gridSize = params.gridSize ? params.gridSize : gridSize;
