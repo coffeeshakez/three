@@ -24,8 +24,7 @@ class Game extends Component {
         
         return ( 
             <>
-            
-            {this.props.location.state.id && this.getGame(this.props.location.state.id)}
+            {this.props.location.state && this.getGame(this.props.location.state.id)}
             </>
          );
     }
