@@ -21,10 +21,11 @@ class Game extends Component {
         }
     }
     render() { 
-        console.log(this.props.location.state);
+        
         return ( 
             <>
-            {this.getGame(this.props.location.state.id)}
+            
+            {this.props.location.state.id && this.getGame(this.props.location.state.id)}
             </>
          );
     }
