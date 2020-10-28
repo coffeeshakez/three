@@ -1,15 +1,5 @@
-.overlay{
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 80px;
-  
+html,body {
+  margin:0;
+  padding:0;
 }
-
-body{
-  margin: 0;
-  padding: 0;
-}
-
 

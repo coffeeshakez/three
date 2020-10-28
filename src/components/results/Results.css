@@ -1,0 +1,9 @@
+.result-list {
+    list-style-type: none;
+    background-color: black;
+}
+
+.result-list__item{
+    font-size: 24px;
+    
+}

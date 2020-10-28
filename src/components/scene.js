@@ -8,6 +8,7 @@ import {MyPointerLockControls} from "../utils/MyPointerLockControls";
 import { createCrossHair } from '../utils/CrosshairUtils';
 import InGameTopInfo from "./inGameTopInfo/InGameTopInfo";
 import { Countdown } from './countDown/Countdown';
+import { Results } from "./results/Results";
 
 class Scene extends React.Component {
 
@@ -19,15 +20,16 @@ constructor(props){
       background: 200,
       countDownTimer: 3,
       totalTimeOnTask: 30,
+      totalTimeOnTaskRemaining: 30,
       timerHasStarted: false,
       countDownHasStarted: false,
-      precision: 100,
       misses: 0,
+      mouseIsLocked: false,
+      taskIsFinished: false,
     }
 
     this.handleStart =  this.handleStart.bind(this);
     this.getRandomSphere = this.getRandomSphere.bind(this);
-    this.changeSense = this.changeSense.bind(this);
 }
 
   componentDidMount() {
@@ -40,18 +42,18 @@ constructor(props){
     
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     
-    this.renderer.setSize(this.mount.offsetWidth, this.mount.offsetHeight)
-    this.mount.appendChild(this.renderer.domElement)
+    this.renderer.setSize(this.mount.offsetWidth, this.mount.offsetHeight);
+    this.mount.appendChild(this.renderer.domElement);
 
     let loader = new THREE.TextureLoader();
     loader.crossOrigin = '';
     let texture = loader.load('./wall.jpg');
 
     var geometry = new THREE.BoxGeometry(1000, 400, 1000, 10, 5, 10);
-    var material = new THREE.MeshBasicMaterial({map: texture, fog: true}); 
+    var material = new THREE.MeshBasicMaterial({map: texture, fog: true});
 
     /* Cause the material to be visible for inside and outside */
-    material.side = THREE.BackSide; 
+    material.side = THREE.BackSide;
 
     var cube = new THREE.Mesh(geometry, material);
     this.scene.add(cube);
@@ -132,6 +134,7 @@ constructor(props){
     controls.addEventListener( 'lock', function () {
 
         // menu.style.display = 'none';
+        this.setState({mouseIsLocked: true});
         
         if(!this.state.countDownHasStarted){
           this.setState(prevState =>{
@@ -148,6 +151,7 @@ constructor(props){
               return{
                    ...prevState,
                    countDownTimer : prevState.countDownTimer - 1
+
               }
            })
           }
@@ -155,17 +159,20 @@ constructor(props){
             self.setState({timerHasStarted: true});
           }
 
-          if(self.state.totalTimeOnTask > 0 && self.state.countDownTimer <= 0){
+          if(self.state.totalTimeOnTaskRemaining > 0 && self.state.countDownTimer <= 0){
             self.setState(prevState =>{
               return{
                    ...prevState,
-                   totalTimeOnTask: prevState.totalTimeOnTask - 1 
+                   totalTimeOnTaskRemaining: prevState.totalTimeOnTaskRemaining - 1 
               }
            });
             
           }
-          if(self.state.totalTimeOnTask <= 0 ){
-            self.setState({timerHasStarted: false});
+          if(self.state.totalTimeOnTaskRemaining <= 0 ){
+            self.setState({
+              timerHasStarted: false,
+              taskIsFinished: true
+            });
             clearInterval(downloadTimer);
           }
           
@@ -218,27 +225,35 @@ constructor(props){
     return sphere[0];
   }
 
-  changeSense(){
-    this.MYSENSE += 1;
-    console.log("Sensitivity: ", this.MYSENSE);
-  }
-
   render() {
     return (
       <>
         <div className="test" ref={ref => (this.mount = ref)} style={{ width: `100vw`, height: `100vh`, margin: `0`, padding: `0`}}></div>
-          <div className="overlay"> 
+          
           <InGameTopInfo 
               props={{
-                countDownTimer: this.state.countDownTimer, 
-                totalTimeOnTask: this.state.totalTimeOnTask,
+                totalTimeOnTaskRemaining: this.state.totalTimeOnTaskRemaining,
                 hits: this.state.points,
                 misses: this.state.misses,
               }}>
           </InGameTopInfo>
-        </div>
-
-        <Countdown props="1"></Countdown>
+        
+        
+        {!this.state.timerHasStarted && 
+          <Countdown props={{
+              countDownTimer: this.state.countDownTimer, 
+              hasStarted: this.state.mouseIsLocked,
+              countDownRunning: this.state.countDownHasStarted
+              }}>
+          </Countdown> 
+        }
+        {this.state.taskIsFinished && 
+          <Results props={{
+            hits: this.state.points,
+            misses: this.state.misses,
+            totalTimeOnTask: this.state.totalTimeOnTask,
+          }}></Results>
+        }
       </>
     )
   }

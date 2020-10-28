@@ -1,6 +1,18 @@
 .countdown {
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0,0,0,0.6);
+    position: fixed;
+    left: 0;
+    top:0;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.countdown h1 {
+    color: white;
+    font-size: 42px;
     
 }
