@@ -25,6 +25,7 @@ constructor(props){
       misses: 0,
       mouseIsLocked: false,
       taskIsFinished: false,
+      sensitivity: 0.002,
     }
 
     this.handleStart =  this.handleStart.bind(this);
@@ -32,6 +33,8 @@ constructor(props){
 }
 
   componentDidMount() {
+    this.setState({sensitivity: window.localStorage.getItem("sensitivity")});
+    
     this.scene = new THREE.Scene();
     //camera
     this.camera = new THREE.PerspectiveCamera(75, this.mount.offsetWidth/this.mount.offsetHeight, 0.1, 1000);
@@ -91,7 +94,7 @@ constructor(props){
 
    this.scene.add(this.camera);
 
-    let controls = new MyPointerLockControls( this.camera, this.mount, this.MYSENSE );
+    let controls = new MyPointerLockControls( this.camera, this.mount, this.state.sensitivity );
         
     let raycaster = new THREE.Raycaster();
     
