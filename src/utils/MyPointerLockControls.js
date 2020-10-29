@@ -47,8 +47,8 @@ var MyPointerLockControls = function ( camera, domElement, sensitivity ) {
 
 		euler.setFromQuaternion( camera.quaternion );
 
-		euler.y -= movementX * (sensitivity * .0001) ;
-		euler.x -= movementY * (sensitivity * .0001) ;
+		euler.y -= movementX * (sensitivity * .00002);
+		euler.x -= movementY * (sensitivity * .00002);
 		console.log("this is the sensitivity: ", sensitivity);
 
 		euler.x = Math.max( PI_2 - scope.maxPolarAngle, Math.min( PI_2 - scope.minPolarAngle, euler.x ) );
