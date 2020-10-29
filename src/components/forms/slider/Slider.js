@@ -5,7 +5,7 @@ const Slider = (props) => (
 
         <div className="slidercontainer">
             <input type="range" min="1" max="100" value={props.value} onChange={props.onChange} class="slider" id="myRange"></input>
-            <p>{props.value / 10000}</p>
+            <p>{props.value}</p>
         </div>
     )
 
