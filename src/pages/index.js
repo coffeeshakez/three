@@ -11,11 +11,11 @@ class Dashboard extends Component {
         return ( 
             <Layout>
                 <Card
-                    url={`/game?id=${"grid-shot"}`}
+                    url={`/game`}
                     linkState={{id: "grid-shot"}}
                     title="GridShot"
                     description="improve your aiming skills"
-                    imageUrl="grid-shot.png"
+                    imageUrl="./grid-shot.png"
                 />
             </Layout>
          );

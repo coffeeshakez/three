@@ -7,7 +7,6 @@
 
 import React from "react"
 import PropTypes from "prop-types"
-import { useStaticQuery, graphql } from "gatsby"
 import "../../styles/main.css";
 import "./layout.css";
 import Header from "../header/header";
@@ -42,4 +41,4 @@ Layout.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-export default Layout
+export default Layout;
