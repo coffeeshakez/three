@@ -49,6 +49,7 @@ var MyPointerLockControls = function ( camera, domElement, sensitivity ) {
 
 		euler.y -= movementX * sensitivity;
 		euler.x -= movementY * sensitivity;
+		console.log("this is the sensitivity: ", sensitivity);
 
 		euler.x = Math.max( PI_2 - scope.maxPolarAngle, Math.min( PI_2 - scope.minPolarAngle, euler.x ) );
 

@@ -16,14 +16,14 @@ class Settings extends Component {
     }
 
     componentDidMount(){
-        this.setState({localStorage: window.localStorage, sensitivity: window.localStorage.getItem("sensitivity") * 1000});
+        this.setState({localStorage: window.localStorage, sensitivity: window.localStorage.getItem("sensitivity") * 10000});
     }
 
     handleSensitivityChange(e){
         console.log(e.target.value);
 
-        this.state.localStorage.setItem("sensitivity", e.target.value * 0.001);
-        this.setState({sensitivity: this.state.localStorage.getItem("sensitivity") * 1000});
+        this.state.localStorage.setItem("sensitivity", e.target.value / 10000);
+        this.setState({sensitivity: this.state.localStorage.getItem("sensitivity") * 10000});
     }
     render() { 
         return ( 

@@ -8,6 +8,7 @@ import { createCrossHair } from '../utils/CrosshairUtils';
 import InGameTopInfo from "./inGameTopInfo/InGameTopInfo";
 import { Countdown } from './countDown/Countdown';
 import { Results } from "./results/Results";
+import { InitializePointerLockControls } from "../utils/InitializeScene";
 
 class Scene extends React.Component {
 
@@ -33,7 +34,8 @@ constructor(props){
 }
 
   componentDidMount() {
-    this.setState({sensitivity: window.localStorage.getItem("sensitivity")});
+    
+    
     
     this.scene = new THREE.Scene();
     //camera
@@ -94,12 +96,14 @@ constructor(props){
 
    this.scene.add(this.camera);
 
-    let controls = new MyPointerLockControls( this.camera, this.mount, this.state.sensitivity );
-        
-    let raycaster = new THREE.Raycaster();
+   let controls = undefined;
+
+   this.setState({sensitivity: window.localStorage.getItem("sensitivity")}, 
     
-// add event listener to show/hide a UI (e.g. the game's menu)
-    this.mount.addEventListener( 'mousedown', function(event, scope) {  
+    () => {
+      
+      controls = InitializePointerLockControls(this.camera, this.mount, this.state.sensitivity, this);
+      this.mount.addEventListener( 'mousedown', function(event, scope) {  
 
         controls.lock();
         if(this.state.timerHasStarted) {
@@ -133,68 +137,15 @@ constructor(props){
         }
       }  
 
-    }.bind(this), false );
+    }.bind(this), false );      
+    });
 
-    controls.addEventListener( 'lock', function () {
-
-        // menu.style.display = 'none';
-        this.setState({mouseIsLocked: true});
+    
         
-        if(!this.state.countDownHasStarted){
-          this.setState(prevState =>{
-            return{
-                 ...prevState,
-                 countDownHasStarted : true
-            }
-         });
-          var self = this;
-          var downloadTimer = setInterval(function(){
-
-          if(self.state.countDownTimer > 0){
-            self.setState(prevState =>{
-              return{
-                   ...prevState,
-                   countDownTimer : prevState.countDownTimer - 1
-
-              }
-           })
-          }
-          else{
-            self.setState({timerHasStarted: true});
-          }
-
-          if(self.state.totalTimeOnTaskRemaining > 0 && self.state.countDownTimer <= 0){
-            self.setState(prevState =>{
-              return{
-                   ...prevState,
-                   totalTimeOnTaskRemaining: prevState.totalTimeOnTaskRemaining - 1 
-              }
-           });
-            
-          }
-          if(self.state.totalTimeOnTaskRemaining <= 0 ){
-            self.setState({
-              timerHasStarted: false,
-              taskIsFinished: true
-            });
-            clearInterval(downloadTimer);
-          }
-          
-        }, 1000);
-
-        
-        }
-
-    }.bind(this), false );
-
-    controls.addEventListener( 'unlock', function () {
-
-        // menu.style.display = 'block';
-        console.log("controls are now unlocked");
-        controls.unlock();
-
-    } );
-
+    let raycaster = new THREE.Raycaster();
+    
+// add event listener to show/hide a UI (e.g. the game's menu)
+    
     this.animate = function () {
       requestAnimationFrame(this.animate.bind(this));
 
